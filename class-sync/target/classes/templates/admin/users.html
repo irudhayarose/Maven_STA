@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Class Sync</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/dashboard" class="logo"><i class="fas fa-graduation-cap"></i> Class Sync</a>
+        <div class="nav-right">
+            <span class="role-badge">Admin</span>
+            <form th:action="@{/logout}" method="POST" style="display:inline;">
+                <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-users-cog"></i> Manage Users</h1>
+            <a href="/admin/users/add" class="btn btn-primary"><i class="fas fa-plus"></i> Add User</a>
+        </div>
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.firstName + ' ' + user.lastName}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td><span class="role-badge" th:text="${user.role}"></span></td>
+                            <td><span class="badge badge-active" th:text="${user.status}"></span></td>
+                            <td>
+                                <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Are you sure?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${#lists.isEmpty(users)}" class="empty-state">
+                <i class="fas fa-user-slash"></i>
+                <p>No users found</p>
+            </div>
+        </div>
+        <a href="/dashboard" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+</body>
+</html>

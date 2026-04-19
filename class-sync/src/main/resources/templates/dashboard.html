@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Class Sync</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .navbar .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .navbar .user-section span {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-section h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-section p {
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .quick-access {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .quick-access h2 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .quick-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .quick-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .quick-btn i {
+            font-size: 1.5rem;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .container {
+                margin: 1rem auto;
+            }
+            
+            .welcome-section h1 {
+                font-size: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-access-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            Class Sync
+        </div>
+        <div class="user-section">
+            <span>Welcome, <strong th:text="${user.firstName}">User</strong></span>
+            <span class="role-badge" th:text="${role}">Role</span>
+            <form th:action="@{/logout}" method="POST" style="display: inline;">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="welcome-section">
+            <h1><i class="fas fa-wave-hand"></i> Welcome to Class Sync Dashboard</h1>
+            <p>Your centralized platform for academic management and progress tracking</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="number" th:text="${totalStudents}">0</div>
+                <div class="label">Total Students</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chalkboard-user"></i>
+                <div class="number" th:text="${totalFaculty}">0</div>
+                <div class="label">Faculty Members</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-book"></i>
+                <div class="number" th:text="${totalCourses}">0</div>
+                <div class="label">Courses Available</div>
+            </div>
+        </div>
+        
+        <div class="quick-access">
+            <h2>
+                <i class="fas fa-bolt"></i> Quick Access
+            </h2>
+            <div class="quick-access-grid">
+                <a href="/student/dashboard" class="quick-btn" sec:authorize="hasRole('STUDENT')">
+                    <i class="fas fa-chart-line"></i>
+                    My Courses
+                </a>
+                <a href="/student/attendance" class="quick-btn" sec:authorize="hasRole('STUDENT')">
+                    <i class="fas fa-calendar-check"></i>
+                    Attendance
+                </a>
+                <a href="/student/marks" class="quick-btn" sec:authorize="hasRole('STUDENT')">
+                    <i class="fas fa-graduation-cap"></i>
+                    My Marks
+                </a>
+                
+                <a href="/faculty/students" class="quick-btn" sec:authorize="hasRole('FACULTY')">
+                    <i class="fas fa-users"></i>
+                    My Students
+                </a>
+                <a href="/faculty/attendance" class="quick-btn" sec:authorize="hasRole('FACULTY')">
+                    <i class="fas fa-clipboard-list"></i>
+                    Mark Attendance
+                </a>
+                <a href="/faculty/marks" class="quick-btn" sec:authorize="hasRole('FACULTY')">
+                    <i class="fas fa-pen-to-square"></i>
+                    Upload Marks
+                </a>
+                
+                <a href="/admin/users" class="quick-btn" sec:authorize="hasRole('ADMIN')">
+                    <i class="fas fa-user-cog"></i>
+                    Manage Users
+                </a>
+                <a href="/admin/students" class="quick-btn" sec:authorize="hasRole('ADMIN')">
+                    <i class="fas fa-user-tie"></i>
+                    Manage Students
+                </a>
+                <a href="/admin/courses" class="quick-btn" sec:authorize="hasRole('ADMIN')">
+                    <i class="fas fa-book-open"></i>
+                    Manage Courses
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

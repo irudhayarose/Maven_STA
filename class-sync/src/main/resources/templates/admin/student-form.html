@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student - Class Sync</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/dashboard" class="logo"><i class="fas fa-graduation-cap"></i> Class Sync</a>
+        <div class="nav-right">
+            <span class="role-badge">Admin</span>
+            <form th:action="@{/logout}" method="POST" style="display:inline;">
+                <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-user-plus"></i> Add New Student</h1>
+        </div>
+        <div class="card">
+            <form th:action="@{/admin/students/add}" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" id="studentId" name="studentId" required placeholder="e.g. STU004">
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <input type="text" id="department" name="department" required placeholder="e.g. Computer Science">
+                    </div>
+                    <div class="form-group">
+                        <label for="semester">Semester</label>
+                        <input type="number" id="semester" name="semester" required min="1" max="8" placeholder="1-8">
+                    </div>
+                    <div class="form-group">
+                        <label for="userId">User Account</label>
+                        <select id="userId" name="userId" required>
+                            <option value="">Select User</option>
+                            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.firstName + ' ' + user.lastName + ' (' + user.username + ')'}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Courses (select multiple)</label>
+                    <select id="courseIds" name="courseIds" multiple style="height:120px;">
+                        <option th:each="course : ${courses}" th:value="${course.id}" th:text="${course.courseCode + ' - ' + course.courseName}"></option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:1rem; margin-top:1rem;">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Student</button>
+                    <a href="/admin/students" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

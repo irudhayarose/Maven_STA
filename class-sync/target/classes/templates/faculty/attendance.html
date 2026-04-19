@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance - Class Sync</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/dashboard" class="logo"><i class="fas fa-graduation-cap"></i> Class Sync</a>
+        <div class="nav-right">
+            <span class="role-badge">Faculty</span>
+            <form th:action="@{/logout}" method="POST" style="display:inline;">
+                <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-clipboard-list"></i> Mark Attendance</h1>
+        </div>
+
+        <div th:if="${param.success}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i> Attendance marked successfully!
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-calendar-check"></i> Record Attendance</h2>
+            <form th:action="@{/faculty/attendance/mark}" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="courseId">Course</label>
+                        <select id="courseId" name="courseId" required>
+                            <option value="">Select Course</option>
+                            <option th:each="course : ${courses}" th:value="${course.id}" th:text="${course.courseCode + ' - ' + course.courseName}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentId">Student</label>
+                        <select id="studentId" name="studentId" required>
+                            <option value="">Select Student</option>
+                            <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.studentId + ' - ' + student.user.firstName + ' ' + student.user.lastName}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required th:value="${today}">
+                    </div>
+                    <div class="form-group">
+                        <label for="present">Status</label>
+                        <select id="present" name="present" required>
+                            <option value="true">Present</option>
+                            <option value="false">Absent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="remarks">Remarks (optional)</label>
+                    <input type="text" id="remarks" name="remarks" placeholder="e.g. Medical leave, Late arrival...">
+                </div>
+                <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Mark Attendance</button>
+            </form>
+        </div>
+        <a href="/dashboard" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+</body>
+</html>

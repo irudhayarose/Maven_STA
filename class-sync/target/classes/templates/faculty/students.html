@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Students - Class Sync</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/dashboard" class="logo"><i class="fas fa-graduation-cap"></i> Class Sync</a>
+        <div class="nav-right">
+            <span class="role-badge">Faculty</span>
+            <form th:action="@{/logout}" method="POST" style="display:inline;">
+                <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-users"></i> My Students</h1>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="number" th:text="${students != null ? students.size() : 0}">0</div>
+                <div class="label">Total Students</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-book"></i>
+                <div class="number" th:text="${courses != null ? courses.size() : 0}">0</div>
+                <div class="label">My Courses</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-list"></i> Student List</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Semester</th>
+                            <th>GPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="student : ${students}">
+                            <td th:text="${student.studentId}"></td>
+                            <td th:text="${student.user.firstName + ' ' + student.user.lastName}"></td>
+                            <td th:text="${student.department}"></td>
+                            <td th:text="${student.semester}"></td>
+                            <td><span class="badge badge-grade" th:text="${student.gpa}"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${students == null || students.isEmpty()}" class="empty-state">
+                <i class="fas fa-user-slash"></i>
+                <p>No students enrolled in your courses</p>
+            </div>
+        </div>
+        <a href="/dashboard" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+</body>
+</html>
