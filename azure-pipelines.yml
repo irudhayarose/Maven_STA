@@ -1,0 +1,17 @@
+trigger:
+- main
+
+pool:
+  name: Agent2
+
+steps:
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'Path'
+    jdkUserInputPath: 'C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'compile test'
